@@ -8,7 +8,7 @@
         <version>3.1.0</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>pers.kiriraincat</groupId>
+    <groupId>com.example</groupId>
     <artifactId>stroop-test-backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>stroop-test-backend</name>
@@ -30,11 +30,6 @@
             <artifactId>mybatis-spring-boot-starter</artifactId>
             <version>3.0.2</version>
         </dependency>
-        <dependency>
-            <groupId>com.github.ulisesbocchio</groupId>
-            <artifactId>jasypt-spring-boot-starter</artifactId>
-            <version>3.0.5</version>
-        </dependency>
 
         <dependency>
             <groupId>com.mysql</groupId>
@@ -50,46 +45,15 @@
 
     <build>
         <plugins>
-            <!-- 指定启动类，将依赖打成外部jar包 -->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <!-- 生成的jar中，不要包含pom.xml和pom.properties这两个文件 -->
-                        <addMavenDescriptor>false</addMavenDescriptor>
-                        <manifest>
-                            <!-- 是否要把第三方jar加入到类构建路径 -->
-                            <addClasspath>true</addClasspath>
-                            <!-- 外部依赖jar包的最终位置 -->
-                            <classpathPrefix>lib/</classpathPrefix>
-                            <!-- 项目启动类 -->                       
-                            <mainClass>pers.kiriraincat.strooptestbackend.StroopTestBackendApplication</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
+                <groupId>org.graalvm.buildtools</groupId>
+                <artifactId>native-maven-plugin</artifactId>
             </plugin>
-            <!--拷贝依赖到jar外面的lib目录-->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-lib</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>target/lib</outputDirectory>
-                            <excludeTransitive>false</excludeTransitive>
-                            <stripVersion>false</stripVersion>
-                            <includeScope>runtime</includeScope>
-                        </configuration>
-                    </execution>
-                </executions>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
         </plugins>
-        </build>
+    </build>
 
 </project>

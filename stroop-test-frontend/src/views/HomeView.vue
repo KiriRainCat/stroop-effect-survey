@@ -1,7 +1,12 @@
+<template>
+  <div class="text-center">
+    Home Page
+    <div>
+      <router-link to="/survey" class="text-blue-500">To Survey</router-link>
+    </div>
+  </div>
+</template>
+
 <script setup></script>
 
-<template>
-  <main>
-    <h2 class='text-3xl font-bold underline text-cyan-500 m-5 text-center'>Welcome</h2>
-  </main>
-</template>
+<style scoped></style>
