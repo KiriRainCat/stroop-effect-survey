@@ -3,7 +3,7 @@
   <div class='bg-white container shadow-lg rounded-lg px-12 py-6'>
     <!-- question container -->
     <div class='rounded-lg bg-gray-100 p-2 neo-morph-1 text-center font-bold text-gray-800'>
-      <div class='bg-white p-5'>Please select the color that match the word</div>
+      <div class='bg-white p-5'>Please select the color that match the WORD</div>
     </div>
 
     <!-- options container -->
