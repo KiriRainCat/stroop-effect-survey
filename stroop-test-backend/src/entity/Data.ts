@@ -6,7 +6,7 @@ export class Data {
   @PrimaryGeneratedColumn()
   id: number;
   @CreateDateColumn({ name: 'create_time' })
-  createTime: Date;
+  createTime: string;
   @Column({ name: 'matched_avg_time' })
   matchedAvgTime: string;
   @Column({ name: 'unmatched_avg_time' })

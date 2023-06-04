@@ -12,12 +12,12 @@ export class QuestionController {
 
     const arr1: Array<number> = [];
     const arr2: Array<number> = [];
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 20; i++) {
       const rand1 = Math.round(Math.random() * 4);
       let rand2 = Math.round(Math.random() * 4);
-      if (arr1.indexOf(rand1) <= 2) {
+      if (arr1.indexOf(rand1) <= 3) {
         arr1.push(rand1);
-        while (rand1 === rand2 || !(arr2.indexOf(rand2) <= 2)) {
+        while (rand1 === rand2 || !(arr2.indexOf(rand2) <= 3)) {
           rand2 = Math.round(Math.random() * 4);
         }
         arr2.push(rand2);
@@ -39,7 +39,7 @@ export class QuestionController {
       });
     });
 
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 20; i++) {
       questions.push({
         context: {
           type: this.convert(arr1[i]) + '-text',

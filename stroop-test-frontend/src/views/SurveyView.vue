@@ -19,9 +19,11 @@
         <!-- question container -->
         <div class="rounded-lg bg-gray-100 p-2 mt-5 neo-morph-1 text-center font-bold">
           <div class="bg-white p-5 text-gray-800">
-            {{$t('survey.question')}}
+            {{ $t('survey.question') }}
           </div>
-          <div :class="currentQuestion.context.type">{{ currentQuestion.context.value }}</div>
+          <div v-if='currentQuestion.context.value !== undefined' :class="currentQuestion.context.type">
+            {{ $t(`words.${currentQuestion.context.value.toLowerCase()}`) }}
+          </div>
         </div>
 
         <!-- options container -->

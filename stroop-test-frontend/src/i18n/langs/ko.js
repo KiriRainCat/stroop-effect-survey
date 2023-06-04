@@ -19,6 +19,7 @@ const ko = {
     totalWrong: '총 오답 수:',
     specialWrong: '틀렸지만 선택한 답이 단어의 의미와 일치합니다:',
     success: '참여해 주셔서 감사합니다. 즐거운 하루 보내세요~',
+    invalidData: '유효하지 않은 데이터 세트입니다. 시간 초과 또는 잘못된 답변이 너무 많습니다. 테스트를 다시 진행해주세요. 감사합니다',
     title: '테스트 결과:',
     done: '설문 조사가 완료되었습니다. 이것이 당신의 결과입니다.',
   },
@@ -33,6 +34,12 @@ const ko = {
     variables: '변수',
     pleaseInput: '입력해 주세요',
     clickToBegin: '여기를 클릭하여 시작',
+    date: '날짜',
+    red: '빨간색',
+    blue: '파란색',
+    green: '초록색',
+    black: '검은색',
+    yellow: '노란색'
   },
   messages: {
     createBy: '제작자: KiriRainCat (Sam Zhou)',

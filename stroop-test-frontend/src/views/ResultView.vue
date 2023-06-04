@@ -62,6 +62,11 @@
             GPA: <span class="font-bold">{{ display.gpa }}</span>
           </div>
         </div>
+
+        <div class="mb-4">
+          <div class="font-bold text-cyan-500">{{ $t('words.date') }}: </div>
+          <div class="font-bold">{{ display.createTime }}</div>
+        </div>
       </div>
     </el-card>
   </main>
@@ -124,9 +129,15 @@ const onSubmit = () => {
       axios
         .post('/api/store', result)
         .then((res) => {
-          display.value = res.data.data
-          loaded.value = true
-          ElMessage.success(t('result.success'))
+          console.log(res)
+          if (res.data.data === 'Invalid Data') {
+            ElMessage.error(t('result.invalidData'))
+            router.push('/')
+          } else {
+            display.value = res.data.data
+            loaded.value = true
+            ElMessage.success(t('result.success'))
+          }
         })
         .catch((e) => {
           console.log(e)
@@ -137,5 +148,3 @@ const onSubmit = () => {
   })
 }
 </script>
-
-<style scoped></style>

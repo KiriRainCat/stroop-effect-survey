@@ -1,6 +1,6 @@
 <template>
   <main class="text-center bg-gray-100 h-screen flex justify-center items-center">
-    <el-card class="rounded-lg shadow-lg min-w[360px] w-2/5">
+    <el-card class="rounded-lg shadow-lg min-w-[360px] max-w-[540px]">
       <div class="font-bold text-2xl mb-2">{{$t('home.welcome')}}</div>
       <div class="font-medium mb-4">
         {{$t('home.instruction')}}
