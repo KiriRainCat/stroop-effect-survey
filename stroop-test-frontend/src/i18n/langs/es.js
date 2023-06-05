@@ -38,7 +38,7 @@ const es = {
     red: 'rojo',
     blue: 'azul',
     green: 'verde',
-    black: 'negro',
+    black: 'negra',
     yellow: 'amarillo',
   },
   messages: {
