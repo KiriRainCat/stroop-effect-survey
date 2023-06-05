@@ -7,8 +7,9 @@ const zhcn = {
     lang: '请选择您最熟悉的语言：',
   },
   survey: {
-    instruction: '你的目标是选择与单词颜色相匹配的颜色',
-    question: '请从5种颜色中选择与下方单词的颜色相匹配的选项',
+    instruction: '你的目标是选择与词语的字体颜色相匹配的选项',
+    question: '请从5种颜色中选择与下方词语的字体颜色相匹配的选项',
+    pleaseRead: '请再仔细阅读说明5秒钟',
     ready: '我准备好了',
   },
   result: {
@@ -40,6 +41,8 @@ const zhcn = {
     green: '绿色',
     black: '黑色',
     yellow: '黄色',
+    example: '示例',
+    answer: '答案',
   },
   messages: {
     createBy: '制作人：柒夜雨猫 (Sam Zhou)',

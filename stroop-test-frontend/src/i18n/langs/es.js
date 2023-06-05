@@ -7,8 +7,9 @@ const es = {
     lang: 'Seleccione el idioma con el que se sienta más familiarizado/a:',
   },
   survey: {
-    instruction: 'Su objetivo es seleccionar el color que coincide con el color de la palabra',
-    question: 'Por favor, seleccione la opción que coincide con el color de la palabra de las 5 opciones disponibles',
+    instruction: 'Tu objetivo es seleccionar la opción que coincida con el color de fuente de la palabra',
+    question: 'Por favor, selecciona la opción que coincida con el color de fuente de la palabra de entre las 5 opciones de colores',
+    pleaseRead: 'Por favor, lee las instrucciones cuidadosamente.',
     ready: 'Estoy listo/a',
   },
   result: {
@@ -40,6 +41,8 @@ const es = {
     green: 'verde',
     black: 'negra',
     yellow: 'amarillo',
+    example: 'Ejemplo',
+    answer: 'Respuesta',
   },
   messages: {
     createBy: 'Creado por: KiriRainCat (Sam Zhou)',

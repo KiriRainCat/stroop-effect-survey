@@ -7,8 +7,9 @@ const ko = {
     lang: '가장 익숙한 언어를 선택해 주세요:',
   },
   survey: {
-    instruction: '목표는 단어 색상과 일치하는 색상을 선택하는 것입니다.',
-    question: '아래 단어의 색상과 일치하는 옵션을 5가지 중에서 선택해 주세요.',
+    instruction: '단어의 글꼴 색상과 일치하는 옵션을 선택하세요.',
+    question: '다섯 가지 색상 중에서 단어의 글꼴 색상과 일치하는 옵션을 선택해주세요.',
+    pleaseRead: '추가로 5초 동안 주의 깊게 설명을 읽어주세요.',
     ready: '준비되었습니다.',
   },
   result: {
@@ -39,7 +40,9 @@ const ko = {
     blue: '파란색',
     green: '초록색',
     black: '검은색',
-    yellow: '노란색'
+    yellow: '노란색',
+    example: '예시',
+    answer: '답안',
   },
   messages: {
     createBy: '제작자: KiriRainCat (Sam Zhou)',

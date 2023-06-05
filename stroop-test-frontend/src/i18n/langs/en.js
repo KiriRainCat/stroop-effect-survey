@@ -8,8 +8,9 @@ const en = {
     lang: 'Please select the language you are most familiar with:',
   },
   survey: {
-    instruction: 'The goal for you is to select the color that match the COLOR of the word',
-    question: 'Please select one of the 5 colors that match the COLOR of the word bellow',
+    instruction: 'Your goal is to select the option that matches the font color of the word',
+    question: 'Please select the option that matches the font color of the word from the 5 colors',
+    pleaseRead: 'Please read the instructions carefully for 5 more seconds',
     ready: "I'm ready",
   },
   result: {
@@ -41,6 +42,8 @@ const en = {
     green: 'Green',
     black: 'Black',
     yellow: 'Yellow',
+    example: 'Example',
+    answer: 'answer',
   },
   messages: {
     createBy: 'Creator: KiriRainCat (Sam Zhou)',

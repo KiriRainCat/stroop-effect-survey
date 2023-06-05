@@ -21,7 +21,10 @@
           <div class="bg-white p-5 text-gray-800">
             {{ $t('survey.question') }}
           </div>
-          <div v-if='currentQuestion.context.value !== undefined' :class="currentQuestion.context.type">
+          <div
+            v-if="currentQuestion.context.value !== undefined"
+            :class="currentQuestion.context.type"
+          >
             {{ $t(`words.${currentQuestion.context.value.toLowerCase()}`) }}
           </div>
         </div>
@@ -93,22 +96,52 @@ onMounted(() => {
     .get('/api/questions')
     .then((res) => {
       question = res.data.data
-
       result.length = 0
-      ElMessageBox.alert(t('survey.instruction'), t('words.instruction'), {
-        confirmButtonText: t('survey.ready'),
-        showClose: false,
-        callback: () => {
-          currentQuestion.value = question[questionCounter.value]
-          countDown()
-        },
-      })
+
+      let instructionTimer = 4
+      const interval = setInterval(() => {
+        if (instructionTimer > 0) {
+          instructionTimer--
+          console.log(instructionTimer)
+        } else {
+          clearInterval(interval)
+        }
+      }, 1000)
+      ElMessageBox.alert(
+        `<div style='margin-bottom: 8px; color: red; font-weight: bold'>${t(
+          'survey.instruction'
+        )}</div><div>${t('words.example')}：</div><div>${t(
+          'survey.question'
+        )}</div><div style='color: blue; font-weight: bold'>${t(
+          'words.red'
+        )}</div><div style='font-weight: bold'>${t('words.answer')}：${t(
+          'words.blue'
+        )}</div>`,
+        {
+          title: t('words.instruction'),
+          confirmButtonText: t('survey.ready'),
+          showClose: false,
+          dangerouslyUseHTMLString: true,
+          beforeClose: (action, instance, done) => {
+            if (instructionTimer === 0) {
+              done()
+            } else {
+              ElMessage.warning(t('survey.pleaseRead'))
+            }
+          },
+          callback: () => {
+            currentQuestion.value = question[questionCounter.value]
+            countDown()
+          },
+        }
+      )
     })
     .catch((e) => {
       console.log(e)
       ElMessage.error(t('messages.error'))
       router.push('/')
-    }).finally(() => loading.close())
+    })
+    .finally(() => loading.close())
 })
 
 const nextQuestion = () => {
