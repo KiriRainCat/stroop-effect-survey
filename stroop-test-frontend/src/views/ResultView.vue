@@ -76,7 +76,7 @@
 import { useStore } from '@/stores/store'
 import { reactive, ref } from 'vue'
 import axios from 'axios'
-import { ElMessage } from 'element-plus'
+import { ElLoading, ElMessage } from 'element-plus'
 import router from '@/router'
 import { useI18n } from 'vue-i18n'
 
@@ -126,6 +126,7 @@ const onSubmit = () => {
     if (!valid) {
       ElMessage.warning(t('messages.fillForm'))
     } else {
+      const loading = ElLoading.service({ fullscreen: true })
       axios
         .post('/api/store', result)
         .then((res) => {
@@ -143,7 +144,7 @@ const onSubmit = () => {
           console.log(e)
           ElMessage.error(t('messages.error'))
           router.push('/')
-        })
+        }).finally(() => loading.close())
     }
   })
 }

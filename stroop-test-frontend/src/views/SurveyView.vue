@@ -63,7 +63,7 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import router from '../router'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElLoading, ElMessage, ElMessageBox } from 'element-plus'
 import { useStore } from '@/stores/store'
 import axios from 'axios'
 import { useI18n } from 'vue-i18n'
@@ -88,6 +88,7 @@ const timer = ref(5000)
 
 // ==== Functions ==== //
 onMounted(() => {
+  const loading = ElLoading.service({ fullscreen: true })
   axios
     .get('/api/questions')
     .then((res) => {
@@ -107,7 +108,7 @@ onMounted(() => {
       console.log(e)
       ElMessage.error(t('messages.error'))
       router.push('/')
-    })
+    }).finally(() => loading.close())
 })
 
 const nextQuestion = () => {
