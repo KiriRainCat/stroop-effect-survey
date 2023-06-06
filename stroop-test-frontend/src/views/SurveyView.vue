@@ -64,7 +64,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 import router from '../router'
 import { ElLoading, ElMessage, ElMessageBox } from 'element-plus'
 import { useStore } from '@/stores/store'
@@ -102,7 +102,6 @@ onMounted(() => {
       const interval = setInterval(() => {
         if (instructionTimer > 0) {
           instructionTimer--
-          console.log(instructionTimer)
         } else {
           clearInterval(interval)
         }
@@ -114,9 +113,7 @@ onMounted(() => {
           'survey.question'
         )}</div><div style='color: blue; font-weight: bold'>${t(
           'words.red'
-        )}</div><div style='font-weight: bold'>${t('words.answer')}：${t(
-          'words.blue'
-        )}</div>`,
+        )}</div><div style='font-weight: bold'>${t('words.answer')}：${t('words.blue')}</div>`,
         {
           title: t('words.instruction'),
           confirmButtonText: t('survey.ready'),
@@ -192,6 +189,10 @@ const countDown = () => {
     }
   }, 5)
 }
+
+onBeforeUnmount(() => {
+  ElMessageBox.close()
+})
 </script>
 
 <style scoped>
