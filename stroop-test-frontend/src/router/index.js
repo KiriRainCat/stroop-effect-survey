@@ -38,11 +38,11 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  const loading = ElLoading.service()
-
   const store = useStore()
+  let loading;
   let timeout = 0
   if (store.result.length === 0) {
+    loading = ElLoading.service()
     timeout = 1000
   }
 
