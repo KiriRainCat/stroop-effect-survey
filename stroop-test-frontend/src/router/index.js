@@ -43,7 +43,7 @@ router.beforeEach((to, from, next) => {
   const store = useStore()
   let timeout = 0
   if (store.result.length === 0) {
-    timeout = 10
+    timeout = 1000
   }
 
   setTimeout(() => {
