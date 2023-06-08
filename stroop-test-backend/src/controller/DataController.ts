@@ -23,4 +23,9 @@ export class DataController {
     }
     return res;
   }
+
+  @Get('/get')
+  async get() {
+    return this.dataService.getData();
+  }
 }

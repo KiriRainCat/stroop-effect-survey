@@ -50,8 +50,51 @@ export class DataService {
     data.gpa = result.gpa.toString();
     const createTime = this.currentDateTime();
 
-    this.ctx.cookies.set('user', JSON.stringify({ ...data, createTime }));
-    return this.dataModel.save(data);
+    if ((await this.dataModel.save(data)) !== null) {
+      this.ctx.cookies.set('user', JSON.stringify({ ...data, createTime }));
+      return { ...data, createTime };
+    } else {
+      return null;
+    }
+  }
+
+  async getData() {
+    let gpaList;
+    let sAgeList;
+    let tAgeList;
+    let oAgeList;
+
+    await this.dataModel.find().then(res => {
+      gpaList = res
+        .map(({ difference, gpa }) => {
+          if (Number.parseFloat(gpa) < 5.4) return [difference, gpa];
+        })
+        .filter(item => item !== undefined);
+
+      sAgeList = res
+        .map(({ difference, age, gpa }) => {
+          if (Number.parseFloat(gpa) < 5.4) return [age, difference];
+        })
+        .filter(item => item !== undefined);
+
+      tAgeList = res
+        .map(({ difference, age, gpa }) => {
+          if (Number.parseFloat(gpa) === 5.5) return [age, difference];
+        })
+        .filter(item => item !== undefined);
+
+      oAgeList = res
+        .map(({ difference, age, gpa }) => {
+          if (Number.parseFloat(gpa) === 5.49) return [age, difference];
+        })
+        .filter(item => item !== undefined);
+    });
+    return {
+      gpaList: gpaList,
+      studentAgeList: sAgeList,
+      teacherAgeList: tAgeList,
+      outsiderAgeList: oAgeList,
+    };
   }
 
   calculateAverage(numbers: number[]): number {
