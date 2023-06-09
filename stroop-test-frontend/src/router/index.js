@@ -42,10 +42,10 @@ router.beforeEach((to, from, next) => {
   let loading;
   let timeout = 0
   if (store.result.length === 0) {
-    loading = ElLoading.service()
     timeout = 1000
   }
 
+  loading = ElLoading.service()
   setTimeout(() => {
     if (store.result.length === undefined && to.name.startsWith('survey')) {
       ElMessage.info(i18n.global.t('result.done'))
@@ -55,8 +55,8 @@ router.beforeEach((to, from, next) => {
     } else {
       next()
     }
+    loading.close()
   }, timeout)
-  loading.close()
 })
 
 export default router
