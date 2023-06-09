@@ -42,7 +42,7 @@ router.beforeEach((to, from, next) => {
   let loading;
   let timeout = 0
   if (store.result.length === 0) {
-    timeout = 1000
+    timeout = 2000
   }
 
   loading = ElLoading.service()
