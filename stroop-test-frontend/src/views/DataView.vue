@@ -23,7 +23,7 @@
     <el-card v-else>
       <div class="text-center text-xl font-bold mb-4">Data Analysis Results:</div>
       <!-- 数据数量分类显示 -->
-      <div class="grid grid-cols-4 gap-4 mb-8 pt-2 max-w-[700px] mx-auto" v-if='loaded'>
+      <div class="grid grid-cols-4 gap-4 mb-8 pt-2 max-w-[700px] mx-auto" v-if="loaded">
         <el-card shadow="never" class="rounded-l shadow-lg">
           <template #header>
             <div class="text-emerald-400 text-center font-bold font-serif">Total Data:</div>
@@ -62,40 +62,159 @@
       <el-divider direction="horizontal" />
 
       <!-- Age Regression Chart -->
-      <div id="ageRegressionChart" class="w-[800px] h-[400px] mb-2"></div>
-      <div class='mb-4 ml-14 font-bold'>Spearman Correlation: {{ 'None' }}</div>
-      <el-divider direction='horizontal' />
+      <div id="normalCurveChart" class="w-[800px] h-[400px] mb-2"></div>
+      <el-divider direction="horizontal" />
 
+      <!-- Age Regression Chart -->
+      <div id="ageRegressionChart" class="w-[800px] h-[400px] mb-2"></div>
+      <div class="mb-4 ml-14 font-bold">
+        Pearson Correlation (All data involved): {{ ageDiffCorrelation }}
+      </div>
+      <el-divider direction="horizontal" />
+
+      <!-- GPA Regression Chart -->
       <div id="gpaRegressionChart" class="w-[800px] h-[400px]"></div>
-      <div class='mb-4 ml-14 font-bold'>Spearman Correlation: {{ 'None' }}</div>
-      <el-divider direction='horizontal' />
+      <div class="mb-4 ml-14 font-bold">Pearson Correlation: {{ gpaDiffCorrelation }}</div>
+      <el-divider direction="horizontal" />
     </el-card>
   </main>
 </template>
 
 <script setup>
 import { onMounted, ref } from 'vue'
-import { ElMessage } from 'element-plus'
+import { ElLoading, ElMessage } from 'element-plus'
 import * as echarts from 'echarts'
 import * as ecStat from 'echarts-stat'
 import axios from 'axios'
+import * as math from 'mathjs'
 
 const loaded = ref(false)
 let gpaData
 let studentAgeData
 let teacherAgeData
 let outsiderAgeData
+
+let gpaDiffCorrelation
+const ageDiffCorrelation = ref()
 onMounted(async () => {
+  const loading = ElLoading.service()
+
   await axios.get('/api/get').then((res) => {
-    gpaData = res.data.data.gpaList
-    studentAgeData = res.data.data.studentAgeList
-    teacherAgeData = res.data.data.teacherAgeList
-    outsiderAgeData = res.data.data.outsiderAgeList
-    loaded.value = true
+    const data = res.data.data
+    // 从后端加载数据
+    gpaData = data.gpaList
+    studentAgeData = data.studentAgeList
+    teacherAgeData = data.teacherAgeList
+    outsiderAgeData = data.outsiderAgeList
+
+    let [age, diff] = math.transpose([...studentAgeData, ...teacherAgeData, ...outsiderAgeData])
+    // 初始化图例
     initAgeRegression()
     initGpaRegression()
+    initNormalCurve(diff)
+
+    // 继续加载数据
+    ageDiffCorrelation.value = calcCorr(studentAgeData)
+    gpaDiffCorrelation = calcCorr(gpaData)
+
+    loaded.value = true
+    loading.close()
   })
 })
+
+// ==== Normal Curve ==== //
+const initNormalCurve = (diff) => {
+  const normalCurveChart = echarts.init(document.getElementById('normalCurveChart'))
+  diff = diff.sort((a, b) => a - b)
+
+  const frequency = {};
+
+  for (let i = 0; i < diff.length; i++) {
+    const value = diff[i];
+
+    for (let j = -0.8; j <= 0.8; j += 0.05) {
+      if (value > j && value < j + 0.05) {
+        if (!frequency[j]) {
+          frequency[j] = 0;
+        }
+        frequency[j]++;
+        break;
+      }
+    }
+  }
+
+  let keys = Object.keys(frequency);
+  keys = keys.map(key => Number.parseFloat(key).toFixed(1))
+  const values = Object.values(frequency);
+
+  // 正态分布曲线计算
+
+
+  const option = {
+    title: {
+      text: 'Avg. Response Time Difference Normal Curve',
+      left: 'center',
+      top: 0,
+    },
+    legend: {
+      data: ['Frequency', 'NormalCurve'],
+      top: 40,
+    },
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        type: 'shadow',
+      },
+    },
+    grid: {
+      top: '20%',
+      bottom: '20%',
+    },
+    xAxis: {
+      type: 'category',
+      data: keys,
+      axisTick: {
+        alignWithLabel: true,
+      },
+      name: 'Difference',
+      nameLocation: 'middle',
+      nameGap: 42,
+      nameTextStyle: {
+        color: '#333',
+        fontSize: 14,
+        fontWeight: 'bold',
+      },
+    },
+    yAxis: {
+      type: 'value',
+      name: 'Frequency',
+      nameLocation: 'middle',
+      nameGap: 42,
+      nameRotate: 90,
+      nameTextStyle: {
+        color: '#333',
+        fontSize: 14,
+        fontWeight: 'bold',
+      },
+    },
+    series: [
+      {
+        name: 'Frequency',
+        type: 'bar',
+        data: values,
+      },
+      {
+        name: 'NormalCurve',
+        type: 'line',
+        color: 'red',
+        smooth: true,
+        labelSize: 0.1,
+        data: values,
+      },
+    ],
+  }
+  normalCurveChart.setOption(option)
+}
 
 // ==== Polynomial Regression Graph for Age ==== //
 const initAgeRegression = () => {
@@ -314,5 +433,19 @@ const onVerify = () => {
       'Failed to verify your identity, if you are a participant, please go to the root url of this site'
     )
   }
+}
+
+const calcCorr = (matrix) => {
+  const [list1, list2] = math.transpose(matrix)
+
+  let newList = []
+  let len = list1.length
+  for (let i = 0; i < len; i++) {
+    newList.push(list1[i] * list2[i])
+  }
+  let mean1 = math.mean(list1),
+    mean2 = math.mean(list2)
+  let cov = math.mean(newList) - mean1 * mean2
+  return cov / (math.std(list1) * math.std(list2))
 }
 </script>

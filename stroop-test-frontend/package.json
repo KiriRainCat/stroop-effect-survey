@@ -13,6 +13,7 @@
     "echarts": "^5.4.2",
     "echarts-stat": "^1.2.0",
     "element-plus": "^2.3.6",
+    "mathjs": "^11.8.0",
     "pinia": "^2.0.32",
     "vue": "^3.2.47",
     "vue-router": "^4.1.6"

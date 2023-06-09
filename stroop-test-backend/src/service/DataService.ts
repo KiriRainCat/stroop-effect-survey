@@ -51,7 +51,9 @@ export class DataService {
     const createTime = this.currentDateTime();
 
     if ((await this.dataModel.save(data)) !== null) {
-      this.ctx.cookies.set('user', JSON.stringify({ ...data, createTime }), { maxAge: 3600 * 24 * 365 * 100 });
+      this.ctx.cookies.set('user', JSON.stringify({ ...data, createTime }), {
+        maxAge: 3600 * 24 * 365 * 100,
+      });
       return { ...data, createTime };
     } else {
       return null;
@@ -89,6 +91,7 @@ export class DataService {
         })
         .filter(item => item !== undefined);
     });
+
     return {
       gpaList: gpaList,
       studentAgeList: sAgeList,
