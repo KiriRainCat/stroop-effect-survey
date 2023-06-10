@@ -1,5 +1,5 @@
 <template>
-  <main class="flex pt-20 pb-20 items-center justify-center bg-gray-100">
+  <main class="flex pt-20 pb-20 items-center justify-center bg-gray-100 min-h-screen h-full">
     <!-- 身份验证 -->
     <el-card class="min-w-[360px] flex justify-center shadow-lg rounded-lg" v-if="!verified">
       <!-- Tailwind CSS 输入框 -->
@@ -58,6 +58,38 @@
             <div class="text-center text-[18px] font-mono">{{ outsiderAgeData.length }}</div>
           </template>
         </el-card>
+        <el-card shadow="never" class="rounded-l shadow-lg">
+          <template #header>
+            <div class="text-emerald-400 text-center font-bold font-serif">Diff. Mean:</div>
+          </template>
+          <template #default>
+            <div class="text-center text-[18px] font-mono">{{ diffMean.toFixed(4) }}</div>
+          </template>
+        </el-card>
+        <el-card shadow="never" class="rounded-l shadow-lg">
+          <template #header>
+            <div class="text-emerald-400 text-center font-bold font-serif">STD:</div>
+          </template>
+          <template #default>
+            <div class="text-center text-[18px] font-mono">{{ diffStd.toFixed(4) }}</div>
+          </template>
+        </el-card>
+        <el-card shadow="never" class="rounded-l shadow-lg">
+          <template #header>
+            <div class="text-emerald-400 text-center font-bold font-serif">Age Mean:</div>
+          </template>
+          <template #default>
+            <div class="text-center text-[18px] font-mono">{{ ageMean.toFixed(2) }}</div>
+          </template>
+        </el-card>
+        <el-card shadow="never" class="rounded-l shadow-lg">
+          <template #header>
+            <div class="text-emerald-400 text-center font-bold font-serif">GPA Mean:</div>
+          </template>
+          <template #default>
+            <div class="text-center text-[18px] font-mono">{{ gpaMean.toFixed(2) }}</div>
+          </template>
+        </el-card>
       </div>
       <el-divider direction="horizontal" />
 
@@ -88,7 +120,9 @@ import * as ecStat from 'echarts-stat'
 import axios from 'axios'
 import * as math from 'mathjs'
 
+// ==== Declare Data Variables ==== //
 const loaded = ref(false)
+let diff
 let gpaData
 let studentAgeData
 let teacherAgeData
@@ -96,6 +130,11 @@ let outsiderAgeData
 
 let gpaDiffCorrelation
 const ageDiffCorrelation = ref()
+const diffMean = ref()
+const diffStd = ref()
+const ageMean = ref()
+const gpaMean = ref()
+// ==== Load Data ==== //
 onMounted(async () => {
   const loading = ElLoading.service()
 
@@ -107,15 +146,20 @@ onMounted(async () => {
     teacherAgeData = data.teacherAgeList
     outsiderAgeData = data.outsiderAgeList
 
-    let [age, diff] = math.transpose([...studentAgeData, ...teacherAgeData, ...outsiderAgeData])
-    // 初始化图例
-    initAgeRegression()
-    initGpaRegression()
-    initNormalCurve(diff)
+    let [age, ageResDiff] = math.transpose([
+      ...studentAgeData,
+      ...teacherAgeData,
+      ...outsiderAgeData,
+    ])
+    diff = ageResDiff
+    let [, gpa] = math.transpose(gpaData)
 
-    // 继续加载数据
     ageDiffCorrelation.value = calcCorr(studentAgeData)
     gpaDiffCorrelation = calcCorr(gpaData)
+    diffMean.value = math.mean(ageResDiff)
+    diffStd.value = math.std(ageResDiff)
+    ageMean.value = math.mean(age)
+    gpaMean.value = math.mean(gpa)
 
     loaded.value = true
     loading.close()
@@ -125,30 +169,48 @@ onMounted(async () => {
 // ==== Normal Curve ==== //
 const initNormalCurve = (diff) => {
   const normalCurveChart = echarts.init(document.getElementById('normalCurveChart'))
-  diff = diff.sort((a, b) => a - b)
+  diff = diff.map((i) => Number.parseFloat(i))
 
-  const frequency = {};
+  diff = diff.sort((a, b) => a - b)
+  const min = math.min(diff)
+  const max = math.max(diff)
+
+  const frequency = {}
 
   for (let i = 0; i < diff.length; i++) {
-    const value = diff[i];
+    const value = diff[i]
 
-    for (let j = -0.8; j <= 0.8; j += 0.05) {
-      if (value > j && value < j + 0.05) {
+    for (let j = min; j <= max; j += (max - min) / 30) {
+      if (value > j && value < j + (max - min) / 30) {
         if (!frequency[j]) {
-          frequency[j] = 0;
+          frequency[j] = 0
         }
-        frequency[j]++;
-        break;
+        frequency[j]++
+        break
+      } else if (!frequency[j]) {
+        frequency[j] = 0
       }
     }
   }
 
-  let keys = Object.keys(frequency);
-  keys = keys.map(key => Number.parseFloat(key).toFixed(1))
-  const values = Object.values(frequency);
+  let keys = Object.keys(frequency)
+  const values = Object.values(frequency)
 
-  // 正态分布曲线计算
+  // 计算正态分布曲线
+  const mean = math.mean(diff)
+  const std = math.std(diff)
 
+  function normalDistribution() {
+    let NDarr = []
+    for (let i = 0; i < keys.length; i++) {
+      let ND =
+        Math.sqrt(2 * Math.PI) *
+        std *
+        Math.pow(Math.E, -(Math.pow(keys[i] - mean, 2) / (2 * Math.pow(std, 2))))
+      NDarr.push(ND)
+    }
+    return NDarr
+  }
 
   const option = {
     title: {
@@ -172,7 +234,7 @@ const initNormalCurve = (diff) => {
     },
     xAxis: {
       type: 'category',
-      data: keys,
+      data: keys.map(i => Number.parseFloat(i).toFixed(2)),
       axisTick: {
         alignWithLabel: true,
       },
@@ -185,23 +247,39 @@ const initNormalCurve = (diff) => {
         fontWeight: 'bold',
       },
     },
-    yAxis: {
-      type: 'value',
-      name: 'Frequency',
-      nameLocation: 'middle',
-      nameGap: 42,
-      nameRotate: 90,
-      nameTextStyle: {
-        color: '#333',
-        fontSize: 14,
-        fontWeight: 'bold',
+    yAxis: [
+      {
+        type: 'value',
+        position: 'left',
+        name: 'Frequency',
+        nameLocation: 'middle',
+        nameGap: 42,
+        nameRotate: 90,
+        nameTextStyle: {
+          color: '#333',
+          fontSize: 14,
+          fontWeight: 'bold',
+        },
       },
-    },
+      {
+        type: 'value',
+        position: 'right',
+        name: 'NormalDist',
+        nameTextStyle: {
+          color: '#333',
+          fontSize: 14,
+          fontWeight: 'bold',
+        },
+      },
+    ],
     series: [
       {
         name: 'Frequency',
         type: 'bar',
         data: values,
+        yAxisIndex: 0,
+        barGap: 0,
+        barWidth: 20,
       },
       {
         name: 'NormalCurve',
@@ -209,7 +287,9 @@ const initNormalCurve = (diff) => {
         color: 'red',
         smooth: true,
         labelSize: 0.1,
-        data: values,
+        data: normalDistribution(),
+        symbol: 'none',
+        yAxisIndex: 1,
       },
     ],
   }
@@ -324,6 +404,12 @@ const initAgeRegression = () => {
     if (params.selected.OutsiderScatters) {
       ageDataSource.push(...outsiderAgeData)
     }
+    if (ageDataSource.length === 0) {
+      ageDiffCorrelation.value = 'Nah'
+    } else {
+      ageDiffCorrelation.value = calcCorr(ageDataSource)
+    }
+
     let option = ageRegressionChart.getOption()
     option.series[3].data = ecStat.regression('polynomial', ageDataSource, 3).points
     ageRegressionChart.setOption(option)
@@ -419,14 +505,17 @@ const initGpaRegression = () => {
 }
 
 // ==== Verification ==== //
-const verified = ref(true)
+const verified = ref(false)
 
 const password = ref()
 const onVerify = () => {
   if (password.value === 'KiriRainCat061202') {
     verified.value = true
     setTimeout(() => {
+      // 初始化图例
       initAgeRegression()
+      initGpaRegression()
+      initNormalCurve(diff)
     }, 1000)
   } else {
     ElMessage.warning(
@@ -435,6 +524,7 @@ const onVerify = () => {
   }
 }
 
+// ==== Other Functions ==== //
 const calcCorr = (matrix) => {
   const [list1, list2] = math.transpose(matrix)
 
