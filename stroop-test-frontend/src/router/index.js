@@ -39,7 +39,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const store = useStore()
-  let loading;
+  let loading
   let timeout = 0
   if (store.result.length === 0) {
     timeout = 2000

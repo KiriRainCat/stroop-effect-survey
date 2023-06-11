@@ -18,14 +18,16 @@
           <el-form-item label="GPA" prop="gpa">
             <el-input v-model="result.gpa" type="number" step="0.01" />
           </el-form-item>
-          <el-button type="primary" @click="onSubmit" class="mt-4">{{ $t('words.submit') }}</el-button>
+          <el-button type="primary" @click="onSubmit" class="mt-4">{{
+            $t('words.submit')
+          }}</el-button>
         </el-form>
       </div>
       <div v-if="loaded">
         <div class="font-bold text-emerald-400 text-[20px] mb-2">{{ $t('result.title') }}</div>
 
         <div class="mb-4">
-          <div class="font-bold text-cyan-500">{{ $t('words.avgResponseTime') }}: </div>
+          <div class="font-bold text-cyan-500">{{ $t('words.avgResponseTime') }}:</div>
           <div class="font-medium">
             {{ $t('result.matchedAvgTime') }}
             <span class="font-bold">{{ display.matchedAvgTime }} {{ $t('words.seconds') }}</span>
@@ -37,7 +39,7 @@
         </div>
 
         <div class="mb-4">
-          <div class="font-bold text-cyan-500">{{ $t('result.diffBetweenTwoAvg') }} </div>
+          <div class="font-bold text-cyan-500">{{ $t('result.diffBetweenTwoAvg') }}</div>
           <div class="font-bold">{{ display.difference }} {{ $t('words.seconds') }}</div>
         </div>
 
@@ -64,7 +66,7 @@
         </div>
 
         <div class="mb-4">
-          <div class="font-bold text-cyan-500">{{ $t('words.date') }}: </div>
+          <div class="font-bold text-cyan-500">{{ $t('words.date') }}:</div>
           <div class="font-bold">{{ display.createTime }}</div>
         </div>
       </div>
@@ -112,7 +114,11 @@ const validateGPA = (rule, val, cb) => {
 
 const rules = reactive({
   age: [
-    { required: true, message: `${t('words.pleaseInput')} ${t('words.age')}`, trigger: ['change', 'blur'] },
+    {
+      required: true,
+      message: `${t('words.pleaseInput')} ${t('words.age')}`,
+      trigger: ['change', 'blur'],
+    },
     { validator: validateAge, trigger: ['change', 'blur'] },
   ],
   gpa: [
@@ -144,7 +150,8 @@ const onSubmit = () => {
           console.log(e)
           ElMessage.error(t('messages.error'))
           router.push('/')
-        }).finally(() => loading.close())
+        })
+        .finally(() => loading.close())
     }
   })
 }

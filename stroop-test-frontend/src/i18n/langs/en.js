@@ -21,7 +21,8 @@ const en = {
     totalWrong: 'Total incorrect choice:',
     specialWrong: 'Wrong, but the choice match the meaning of the word:',
     success: 'Thanks for your patience, have a nice day~',
-    invalidData: 'Invalid dataset, too many timeouts or incorrect answers. Please retake the test. Thank you',
+    invalidData:
+      'Invalid dataset, too many timeouts or incorrect answers. Please retake the test. Thank you',
     title: "Here's your test result:",
     done: "You have done the survey already, here's your result",
   },

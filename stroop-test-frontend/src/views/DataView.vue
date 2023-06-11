@@ -100,13 +100,15 @@
       <!-- Age Regression Chart -->
       <div id="ageRegressionChart" class="w-[800px] h-[400px] mb-2"></div>
       <div class="mb-4 ml-14 font-bold">
-        Pearson Correlation (All data involved): {{ ageDiffCorrelation }}
+        Pearson Correlation Coefficient (All data involved): {{ ageDiffCorrelation }}
       </div>
       <el-divider direction="horizontal" />
 
       <!-- GPA Regression Chart -->
       <div id="gpaRegressionChart" class="w-[800px] h-[400px]"></div>
-      <div class="mb-4 ml-14 font-bold">Pearson Correlation: {{ gpaDiffCorrelation }}</div>
+      <div class="mb-4 ml-14 font-bold">
+        Pearson Correlation Coefficient: {{ gpaDiffCorrelation }}
+      </div>
       <el-divider direction="horizontal" />
     </el-card>
   </main>
@@ -234,7 +236,7 @@ const initNormalCurve = (diff) => {
     },
     xAxis: {
       type: 'category',
-      data: keys.map(i => Number.parseFloat(i).toFixed(2)),
+      data: keys.map((i) => Number.parseFloat(i).toFixed(2)),
       axisTick: {
         alignWithLabel: true,
       },
